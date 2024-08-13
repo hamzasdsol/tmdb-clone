@@ -72,8 +72,8 @@ const Today = () => {
 
   return (
     <div>
-      <section className="text-gray-600 body-font">
-        <div className="container px-5 py-10 mx-auto">
+      <section className="text-gray-600 body-font cursor-pointer">
+        <div className="container px-5 py-10 mx-auto cursor-pointer">
           <Carousel
             ref={carouselRef}
             responsive={responsive}
@@ -86,10 +86,10 @@ const Today = () => {
           >
             {trendingToday.map((x, index) => (
               <div key={index} className="relative">
-                <div className="block h-75 w-50 rounded-lg overflow-hidden">
+                <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   <img
                     alt="trending"
-                    className="object-cover object-center w-full h-full block"
+                    className="object-cover object-center w-full h-full block cursor-pointer"
                     src={x.image}
                     loading="lazy" // Lazy loading for performance
                   />
@@ -101,14 +101,14 @@ const Today = () => {
                     }}
                     width="34"
                     height="34"
-                    className="absolute left-3 bottom-1 z-15 transform -translate-y-1/2 rounded-full bg-white"
+                    className="absolute left-3 bottom-1 z-15 transform -translate-y-1/2 cursor-pointer rounded-full bg-white"
                   />
-                  <div className='absolute right-3 top-3 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center hover:bg-blue-500 transition-colors duration-300'>
-                    <i className="fa-solid fa-ellipsis text-xs text-gray-600 hover:text-white"></i>
+                  <div className='absolute right-3 top-3 w-6 h-6 rounded-full cursor-pointer bg-gray-200 flex items-center justify-center hover:bg-blue-500 transition-colors duration-300'>
+                    <i className="fa-solid fa-ellipsis text-xs cursor-pointer text-gray-600 hover:text-white"></i>
                   </div>
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-gray-900 title-font text-lg font-medium">
+                  <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer">
                     {x.title}
                   </h2>
                 </div>

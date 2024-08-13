@@ -1,9 +1,19 @@
 import React from 'react'
 
+import Home from './components/Home'
+import { Route, Routes } from 'react-router-dom'
+import Navbar from './components/Navbar'
+
+
+
 const App = () => {
   return (
     <div>
-      <h1>xjsnxjsnxms</h1>
+      <Navbar/>
+      <Routes>
+      <Route path="/" element={<Home/>} />
+      
+      </Routes>
     </div>
   )
 }

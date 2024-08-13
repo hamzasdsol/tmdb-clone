@@ -1,0 +1,14 @@
+.carousel-container {
+    padding: 0 20px; /* Padding around the carousel container */
+  }
+  
+  .carousel-item {
+    padding: 0 10px; /* Add padding between carousel items */
+    box-sizing: border-box; /* Ensure padding is included within the width */
+  }
+  
+  .carousel-item-wrapper {
+    margin: 0 10px; /* Add margin between items */
+    box-sizing: border-box;
+  }
+  

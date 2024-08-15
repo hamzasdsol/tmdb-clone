@@ -14,5 +14,3 @@ Currently, two official plugins are available:
 React and Vite
 
 > > > > > > > 801941c7ea5a03b88d8f28adc7bb5d4caa28a25f
-
-tes test

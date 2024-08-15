@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { trendingToday } from '../api/trendingToday';
+import React, { useRef, useEffect } from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the default styles
-import './Today.css'; // Custom CSS for Today component
+import './Today.css';
+import { trendingToday } from '../api/trendingToday';
+
+
+
 
 const responsive = {
   superLargeDesktop: {
@@ -23,36 +26,9 @@ const responsive = {
   }
 };
 
-const Today = () => {
-  const carouselRef = useRef(null);
-  const [bars, setBars] = useState([]);
+const FreeWatch = () => {
+  const carouselRef = useRef(null); // Define the carouselRef here
 
-  // Generate random vertical bars
-  useEffect(() => {
-    const generateBars = () => {
-      const barWidth = 2; // Thinner width of each bar
-      const barMargin = 6; // Increase margin between bars
-      const numberOfBars = Math.ceil(window.innerWidth / (barWidth + barMargin)); // Number of bars based on width and margin
-      const barArray = [];
-      for (let i = 0; i < numberOfBars; i++) {
-        const height = Math.random() * (window.innerHeight / 2); // Random height from 0 to half the window height
-        barArray.push({
-          left: `${i * (barWidth + barMargin)}px`, // Position each bar with margin
-          height: `${height}px`,
-          width: `${barWidth}px`, // Set the width of the bars
-        });
-      }
-      setBars(barArray);
-    };
-
-    generateBars();
-    window.addEventListener('resize', generateBars);
-    return () => {
-      window.removeEventListener('resize', generateBars);
-    };
-  }, []);
-
-  // Handle keyboard navigation
   const handleKeyDown = (event) => {
     if (carouselRef.current) {
       if (event.key === 'ArrowRight') {
@@ -63,15 +39,12 @@ const Today = () => {
     }
   };
 
-  // Add and remove event listeners
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
-  // Function to draw the percentage on the canvas
   const drawPercentage = (canvas, percentage) => {
     const ctx = canvas.getContext('2d');
     const radius = canvas.width / 2;
@@ -96,18 +69,10 @@ const Today = () => {
     ctx.fillText(`${percentage}%`, centerX, centerY);
   };
 
+
   return (
     <div>
       <section className="text-gray-600 body-font cursor-pointer" style={{ position: 'relative' }}>
-        <div className="vertical-bars">
-          {bars.map((bar, index) => (
-            <div key={index} style={{
-              left: bar.left,
-              height: bar.height,
-              width: bar.width, // Apply width to the bar
-            }} />
-          ))}
-        </div>
         <div className="container px-5 py-5 mx-auto cursor-pointer">
           <Carousel
             ref={carouselRef}
@@ -119,9 +84,9 @@ const Today = () => {
             itemClass="carousel-item" // Apply margin between items
             containerClass="carousel-container" // Apply padding around container
           >
-            {trendingToday.map((x, index) => (
-              <div key={index} className="relative">
-                <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
+           {trendingToday.map((x, index) => (
+  <div key={index} className="relative">
+     <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   
                   <img
                     alt="trending"
@@ -146,19 +111,21 @@ const Today = () => {
                     <i className="fa-solid fa-ellipsis text-xs cursor-pointer text-gray-600 hover:text-white"></i>
                   </div>
                 </div>
-                <div className="mt-6 ml-4"> {/* Reduced margin-left */}
-                  <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
-                    {x.title}
-                  </h2>
-                  <p className="text-gray-600">{x.date}</p> {/* Added padding-top for spacing */}
-                </div>
-              </div>
-            ))}
+   
+    <div className="mt-6 ml-4">
+      <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
+        {x.title}
+      </h2>
+      <p className="text-gray-600">{x.date}</p>
+    </div>
+  </div>
+))}
+
           </Carousel>
         </div>
       </section>
     </div>
   );
-};
+}
 
-export default Today;
+export default FreeWatch;

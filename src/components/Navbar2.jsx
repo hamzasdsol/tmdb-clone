@@ -14,22 +14,21 @@ const Navbar2 = () => {
         className='w-full h-auto'
         style={{ filter: 'brightness(50%) contrast(80%)' }} 
       />
-      <div className='absolute top-10 left-20 right-20 text-white w-[80vw]'> 
-      <h1 className='text-4xl font-bold pt-10'>Welcome.</h1>
-<p className='text-4xl font-semibold whitespace-nowrap overflow-hidden text-ellipsis mt-0'>
-  Millions of movies, TV shows, and people to discover. Explore now.
-</p>
+      <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center px-4 md:px-8 w-full md:w-[80vw]'>
+        <h1 className='text-2xl md:text-4xl font-bold text-left mb-1'>Welcome.</h1>
+        <p className='text-lg md:text-2xl text-left font-semibold whitespace-nowrap overflow-hidden text-ellipsis'>
+          Millions of movies, TV shows, and people to discover. Explore now.
+        </p>
 
-        <div className='mt-11 relative  text-1xl text-gray-600'>
+        <div className='mt-8 relative text-base text-gray-600'>
           <input
             type='text'
             placeholder='Search for a Movie, TV Show, Person...'
-            className='p-4 w-full bg-white text-gray-900 rounded-full text-1xl pr-24' // Increased padding to increase height
-            style={{ paddingLeft: '1rem' }}
+            className='p-3 w-full md:p-4 bg-white text-gray-900 rounded-full text-base pr-24'
           />
           <button
-            className='absolute right-0 top-0 bottom-0 px-6 text-white rounded-full transition-colors duration-300 ease-in-out hover:text-black'
-            style={{ ...doubleColor, height: '100%', lineHeight: '2.5rem' }} // Ensure button covers full height
+            className='absolute right-0 top-0 bottom-0 px-4 md:px-6 text-white rounded-full transition-colors duration-300 ease-in-out hover:text-black'
+            style={{ ...doubleColor, height: '100%', lineHeight: '2.5rem' }}
           >
             Search
           </button>

@@ -1,11 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the default styles
-import './Today.css';
-import { trendingToday } from '../api/trendingToday';
+import axios from 'axios'; // Import axios for API calls
 
-
-
+const API_KEY = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDB API key
+const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {
   superLargeDesktop: {
@@ -27,6 +26,8 @@ const responsive = {
 };
 
 const FreeWatch = () => {
+  const [activeFreeToWatchButton, setActiveFreeToWatchButton] = useState('Movies');
+  const [content, setContent] = useState([]);
   const carouselRef = useRef(null); // Define the carouselRef here
 
   const handleKeyDown = (event) => {
@@ -45,6 +46,32 @@ const FreeWatch = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        let endpoint = '';
+        if (activeFreeToWatchButton === 'Movies') {
+          endpoint = `/discover/movie`; // Use discover movie endpoint
+        } else if (activeFreeToWatchButton === 'TV') {
+          endpoint = `/discover/tv`; // Use discover TV endpoint
+        }
+
+        const { data } = await axios.get(`${BASE_URL}${endpoint}`, {
+          params: {
+            api_key: API_KEY,
+            // Add additional parameters if needed
+          }
+        });
+        setContent(data.results);
+      } catch (error) {
+        console.error('Error fetching content:', error);
+      }
+    };
+
+    fetchContent();
+  }, [activeFreeToWatchButton]);
+
   const drawPercentage = (canvas, percentage) => {
     const ctx = canvas.getContext('2d');
     const radius = canvas.width / 2;
@@ -69,9 +96,55 @@ const FreeWatch = () => {
     ctx.fillText(`${percentage}%`, centerX, centerY);
   };
 
+  const selectedStyle = {
+    backgroundColor: 'rgb(3, 37, 65)',
+    color: 'transparent',
+    position: 'relative',
+    overflow: 'hidden',
+  };
+
+  const gradientText = {
+    position: 'relative',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    backgroundImage: 'linear-gradient(45deg, #17ead9, #6078ea)',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    color: 'transparent',
+  };
+
+  const defaultStyle = {
+    backgroundColor: 'white',
+    color: 'black',
+  };
 
   return (
     <div>
+      <div className='pt-10 px-4 flex items-center'>
+        <h2 className='text-3xl font-semibold mr-4'>Free to Watch</h2>
+
+        <div className='border-2 border-black text-black bg-white rounded-full flex items-center'>
+          <button
+            style={activeFreeToWatchButton === 'Movies' ? selectedStyle : defaultStyle}
+            className={`group px-8 py-1 transition-colors font-bold duration-300 ease-in-out rounded-full text-sm`}
+            onClick={() => setActiveFreeToWatchButton('Movies')}
+          >
+            <span style={activeFreeToWatchButton === 'Movies' ? gradientText : {}}>
+              Movies
+            </span>
+          </button>
+          <button
+            style={activeFreeToWatchButton === 'TV' ? selectedStyle : defaultStyle}
+            className={`group px-4 py-1 ml-4 transition-colors font-bold duration-300 ease-in-out rounded-full text-sm`}
+            onClick={() => setActiveFreeToWatchButton('TV')}
+          >
+            <span style={activeFreeToWatchButton === 'TV' ? gradientText : {}}>
+              TV
+            </span>
+          </button>
+        </div>
+      </div>
+      
       <section className="text-gray-600 body-font cursor-pointer" style={{ position: 'relative' }}>
         <div className="container px-5 py-5 mx-auto cursor-pointer">
           <Carousel
@@ -84,43 +157,40 @@ const FreeWatch = () => {
             itemClass="carousel-item" // Apply margin between items
             containerClass="carousel-container" // Apply padding around container
           >
-           {trendingToday.map((x, index) => (
-  <div key={index} className="relative">
-     <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
-                  
+            {content.map((x, index) => (
+              <div key={index} className="relative">
+                <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   <img
                     alt="trending"
                     className="object-cover object-center w-full h-full block cursor-pointer relative"
-                    src={x.image}
+                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`} // Adjust the path as necessary
                     loading="lazy" // Lazy loading for performance
                   />
                   <div className='absolute'>
-                  <canvas
-                    ref={(canvas) => {
-                      if (canvas) {
-                        drawPercentage(canvas, x.percentage);
-                      }
-                    }}
-                    style={{ backgroundColor: 'rgb(3, 37, 65)' }}
-                    width="40"
-                    height="40"
-                    className="absolute left-3 -bottom-10 z-15 transform -translate-y-1/2 cursor-pointer rounded-full bg-white"
-                  />
+                    <canvas
+                      ref={(canvas) => {
+                        if (canvas) {
+                          drawPercentage(canvas, x.vote_average * 10); // Assuming vote_average as percentage
+                        }
+                      }}
+                      style={{ backgroundColor: 'rgb(3, 37, 65)' }}
+                      width="40"
+                      height="40"
+                      className="absolute left-3 -bottom-10 z-15 transform -translate-y-1/2 cursor-pointer rounded-full bg-white"
+                    />
                   </div>
                   <div className='absolute right-3 top-3 w-6 h-6 rounded-full cursor-pointer bg-gray-200 flex items-center justify-center hover:bg-blue-500 transition-colors duration-300'>
                     <i className="fa-solid fa-ellipsis text-xs cursor-pointer text-gray-600 hover:text-white"></i>
                   </div>
                 </div>
-   
-    <div className="mt-6 ml-4">
-      <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
-        {x.title}
-      </h2>
-      <p className="text-gray-600">{x.date}</p>
-    </div>
-  </div>
-))}
-
+                <div className="mt-6 ml-4">
+                  <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
+                    {x.title || x.name} {/* Handle both movies and TV shows */}
+                  </h2>
+                  <p className="text-gray-600">{x.release_date || x.first_air_date}</p> {/* Handle both movies and TV shows */}
+                </div>
+              </div>
+            ))}
           </Carousel>
         </div>
       </section>

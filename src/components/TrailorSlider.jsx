@@ -1,35 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
+import Modal from 'react-modal';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const API_KEY = '1332e02a7aa536736b2d35a49363d0ce';
+const BASE_URL = 'https://api.themoviedb.org/3';
 
-import { latestTrailer } from '../api/latestTrailer';
+const fetchTrending = async (category) => {
+  try {
+    const response = await fetch(`${BASE_URL}/trending/${category}/week?api_key=${API_KEY}`);
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching trending:', error);
+    return [];
+  }
+};
+
+const fetchVideos = async (category, id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/${category}/${id}/videos?api_key=${API_KEY}`);
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching videos:', error);
+    return [];
+  }
+};
 
 const TrailorSlider = () => {
-  const [selected, setSelected] = useState('popular');
+  const [selected, setSelected] = useState('movie');
+  const [latestTrailers, setLatestTrailers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentTrailer, setCurrentTrailer] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState('src/assets/images/bSiI6FlkJxuBLEHsIgkXMoJrnhB2.jpg');
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const trendingItems = await fetchTrending(selected);
+        const trailers = await Promise.all(
+          trendingItems.map(async (item) => {
+            const videos = await fetchVideos(selected, item.id);
+            return videos.find((video) => video.type === 'Trailer') || {};
+          })
+        );
+        setLatestTrailers(trailers.filter((trailer) => trailer.key));
+      } catch (error) {
+        console.error('Error fetching trailers:', error);
+      }
+    };
+
+    fetchData();
+  }, [selected]);
+
+  const openModal = (trailer) => {
+    setCurrentTrailer(trailer);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentTrailer(null);
+  };
+
+  const borderColor = 'rgb(9, 184, 184)'; // Border color for the buttons
   const selectedStyle = {
-    backgroundColor: 'rgb(3, 37, 65)',
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundImage: 'linear-gradient(45deg, #17ead9, #6078ea)',
-    WebkitBackgroundClip: 'img',
-    color: 'transparent',
+    backgroundColor: borderColor,
+    color: 'black', // Text color when selected
   };
 
-  const gradientText = {
-    position: 'relative',
-    fontSize: 'inherit',
-    fontWeight: 'inherit',
-    color: 'white',
-    WebkitBackgroundClip: 'img',
-    backgroundClip: 'img',
-  };
-  
   const defaultStyle = {
     backgroundColor: 'transparent',
-    color: 'white',
+    color: 'white', // Text color when not selected
   };
 
   const sliderSettings = {
@@ -77,7 +121,7 @@ const TrailorSlider = () => {
   return (
     <div
       style={{
-        backgroundImage: 'url("src/assets/images/bSiI6FlkJxuBLEHsIgkXMoJrnhB2.jpg")',
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100%',
@@ -91,96 +135,142 @@ const TrailorSlider = () => {
           <h2 className='text-2xl font-semibold mb-4 sm:mb-0 text-white'>
             Latest Trailers
           </h2>
-          <div className='relative flex space-x-2 rounded-full' style={{ border: '1px solid rgb(9, 184, 184)' }}>
+          <div className='relative flex space-x-2 rounded-full' style={{ border: `1px solid ${borderColor}` }}>
             <button
-              onClick={() => setSelected('popular')}
-              style={selected === 'popular' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm font-medium'
+              onClick={() => setSelected('movie')}
+              style={selected === 'movie' ? selectedStyle : defaultStyle}
+              className='px-4 py-2 rounded-full text-sm  font-bold font-medium'
             >
-              <span style={selected === 'popular' ? gradientText : {}}>
-                Popular
-              </span>
+              Popular
             </button>
             <button
-              onClick={() => setSelected('streaming')}
-              style={selected === 'streaming' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm font-medium'
+              onClick={() => setSelected('Streaming')}
+              style={selected === 'Streaming' ? selectedStyle : defaultStyle}
+              className='px-4 py-2 font-bold rounded-full text-sm font-medium'
             >
-              <span style={selected === 'streaming' ? gradientText : {}}>
-                Streaming
-              </span>
+              Streaming
             </button>
             <button
-              onClick={() => setSelected('tv')}
-              style={selected === 'tv' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm font-medium'
+              onClick={() => setSelected('on TV')}
+              style={selected === 'on TV' ? selectedStyle : defaultStyle}
+              className='px-4 py-2 font-bold rounded-full text-sm font-medium'
             >
-              <span style={selected === 'tv' ? gradientText : {}}>
-                On TV
-              </span>
+              On TV
             </button>
             <button
-              onClick={() => setSelected('rent')}
-              style={selected === 'rent' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm font-medium'
+              onClick={() => setSelected('for rent')}
+              style={selected === 'for rent' ? selectedStyle : defaultStyle}
+              className='px-4 py-2  font-bold rounded-full text-sm font-medium'
             >
-              <span style={selected === 'rent' ? gradientText : {}}>
-                For Rent
-              </span>
+              For Rent
             </button>
             <button
-              onClick={() => setSelected('theaters')}
-              style={selected === 'theaters' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm font-medium'
+              onClick={() => setSelected('in theaters')}
+              style={selected === 'in theaters' ? selectedStyle : defaultStyle}
+              className='px-4 py-2  font-bold rounded-full text-sm font-medium'
             >
-              <span style={selected === 'theaters' ? gradientText : {}}>
-                In Theaters
-              </span>
+              In Theaters
             </button>
           </div>
         </div>
 
         <div className='relative overflow-x-auto slider-container'>
           <Slider {...sliderSettings}>
-            {latestTrailer.map(item => (
-              <div key={item.id} className='inline-block w-full px-2'>
-                <div className='rounded-lg'>
-                  <div className='relative'>
-                    <a title={item.title}>
-                      <img
-                        loading="lazy"
-                        className='w-full h-48 sm:h-40 rounded-lg object-cover'
-                        src={item.image}
-                        alt={item.title}
-                      />
-                    </a>
-                    <div className='absolute top-2 right-2'>
-                      <a href="#" aria-label="View Item Options">
-                        <div className='bg-white px-2 pb-1 rounded-full hover:bg-blue-400'>
-                          <i className="fa-solid fa-ellipsis text-xs"></i>
+            {latestTrailers.length > 0 ? (
+              latestTrailers.map((trailer) => (
+                <div key={trailer.id} className='inline-block w-full px-2'>
+                  <div className='rounded-lg'>
+                    <div
+                      className='relative'
+                      onMouseEnter={() => setBackgroundImage(`https://img.youtube.com/vi/${trailer.key}/hqdefault.jpg`)}
+                      onMouseLeave={() => setBackgroundImage('src/assets/images/bSiI6FlkJxuBLEHsIgkXMoJrnhB2.jpg')}
+                    >
+                      {trailer.key ? (
+                        <div
+                          className='relative cursor-pointer overflow-hidden'
+                          onClick={() => openModal(trailer)}
+                          style={{
+                            transition: 'transform 0.3s ease-in-out',
+                          }}
+                        >
+                          <img
+                            className='w-full h-68 sm:h-55 rounded-lg hover:scale-105 transition-transform duration-300'
+                            src={`https://img.youtube.com/vi/${trailer.key}/hqdefault.jpg`}
+                            alt={trailer.name}
+                          />
+                          <div className='absolute inset-0 flex items-center justify-center'>
+                            <i className='fas fa-play-circle text-white text-4xl'></i>
+                          </div>
                         </div>
-                      </a>
+                      ) : (
+                        <div className='w-full h-48 sm:h-40 rounded-lg bg-gray-800 flex items-center justify-center text-white'>
+                          <p>No video available</p>
+                        </div>
+                      )}
+                      <div className='absolute top-2 right-2'>
+                        <a href="#" aria-label="View Item Options">
+                          <div className='bg-white px-2 pb-1 rounded-full hover:bg-blue-400'>
+                            <i className="fa-solid fa-ellipsis text-xs"></i>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div className='mt-4 mb-20 ms-2'>
+                      <h2 className='text-lg font-semibold'>
+                        <a className='text-white '>
+                          {trailer.name.length > 25 ? `${trailer.name.slice(0, 22)}...` : trailer.name}
+                        </a>
+                      </h2>
                     </div>
                   </div>
-                  <div className='mt-4 ms-2'>
-                  <h2 className='text-lg font-semibold'>
-  <a className='text-white'>
-    {item.title.length > 25 ? `${item.title.slice(0, 22)}...` : item.title}
-  </a>
-</h2>
-
-                    <h2 className='text-sm mt-2 mb-4'>
-                      <a className='text-white'>{item.description}</a>
-                    </h2>
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className='w-full text-center text-white'>No trailers available</div>
+            )}
           </Slider>
         </div>
+
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          style={{
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+              width: '80%',
+              maxWidth: '1000px',
+              height: '60%',
+              backgroundColor: 'rgba(0, 0, 0, 0.9)',
+              border: 'none',
+              padding: 0,
+              zIndex: '10000',
+            },
+            overlay: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              zIndex: '9999',
+            },
+          }}
+        >
+          {currentTrailer && (
+            <iframe
+              width='100%'
+              height='100%'
+              src={`https://www.youtube.com/embed/${currentTrailer.key}`}
+              title='YouTube video player'
+              frameBorder='0'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              allowFullScreen
+            ></iframe>
+          )}
+        </Modal>
       </div>
     </div>
   );
-}
+};
 
 export default TrailorSlider;

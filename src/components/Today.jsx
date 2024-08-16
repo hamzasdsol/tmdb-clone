@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { trendingToday } from '../api/trendingToday';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the default styles
-import './Today.css'; // Custom CSS for Today component
+import axios from 'axios';
+
+const API_KEY = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDB API key
+const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {
   superLargeDesktop: {
@@ -26,6 +28,22 @@ const responsive = {
 const Today = () => {
   const carouselRef = useRef(null);
   const [bars, setBars] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [activeTrendingButton, setActiveTrendingButton] = useState('Today');
+
+  // Fetch trending movies from TMDB
+  const fetchTrendingMovies = async (period) => {
+    try {
+      const endpoint = period === 'Today'
+        ? `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`
+        : `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`;
+      const response = await axios.get(endpoint);
+      return response.data.results;
+    } catch (error) {
+      console.error("Error fetching trending movies:", error);
+      return [];
+    }
+  };
 
   // Generate random vertical bars
   useEffect(() => {
@@ -71,6 +89,17 @@ const Today = () => {
     };
   }, []);
 
+  // Fetch trending movies based on the active button
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchTrendingMovies(activeTrendingButton);
+      console.log(data); // Log data to verify structure
+      setTrendingMovies(data);
+    };
+
+    fetchData();
+  }, [activeTrendingButton]);
+
   // Function to draw the percentage on the canvas
   const drawPercentage = (canvas, percentage) => {
     const ctx = canvas.getContext('2d');
@@ -96,9 +125,56 @@ const Today = () => {
     ctx.fillText(`${percentage}%`, centerX, centerY);
   };
 
+  // Styles for the buttons
+  const selectedStyle = {
+    backgroundColor: 'rgb(3, 37, 65)',
+    color: 'transparent',
+    position: 'relative',
+    overflow: 'hidden',
+  };
+
+  const gradientText = {
+    position: 'relative',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    backgroundImage: 'linear-gradient(45deg, #17ead9, #6078ea)',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    color: 'transparent',
+  };
+
+  const defaultStyle = {
+    backgroundColor: 'white',
+    color: 'black',
+  };
+
   return (
     <div>
       <section className="text-gray-600 body-font cursor-pointer" style={{ position: 'relative' }}>
+        <div className='pt-10 px-4 flex items-center'>
+          <h2 className='text-3xl font-semibold mr-4 text-black'>Trending</h2>
+
+          <div className='border-2 border-black text-black bg-white rounded-full flex items-center'>
+            <button
+              style={activeTrendingButton === 'Today' ? selectedStyle : defaultStyle}
+              className={`group px-11 py-1 transition-colors font-bold duration-300 ease-in-out rounded-full text-sm`}
+              onClick={() => setActiveTrendingButton('Today')}
+            >
+              <span style={activeTrendingButton === 'Today' ? gradientText : {}}>
+                Today
+              </span>
+            </button>
+            <button
+              style={activeTrendingButton === 'This Week' ? selectedStyle : defaultStyle}
+              className={`group px-2 py-1 ml-4 transition-colors  font-bold duration-300 ease-in-out rounded-full text-sm`}
+              onClick={() => setActiveTrendingButton('This Week')}
+            >
+              <span style={activeTrendingButton === 'This Week' ? gradientText : {}}>
+                This Week
+              </span>
+            </button>
+          </div>
+        </div>
         <div className="vertical-bars">
           {bars.map((bar, index) => (
             <div key={index} style={{
@@ -119,39 +195,34 @@ const Today = () => {
             itemClass="carousel-item" // Apply margin between items
             containerClass="carousel-container" // Apply padding around container
           >
-            {trendingToday.map((x, index) => (
+            {trendingMovies.map((x, index) => (
               <div key={index} className="relative">
                 <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
-                  
                   <img
-                    alt="trending"
+                    alt={x.title || 'Trending Movie'}
                     className="object-cover object-center w-full h-full block cursor-pointer relative"
-                    src={x.image}
+                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`} // Update URL based on TMDB structure
                     loading="lazy" // Lazy loading for performance
                   />
                   <div className='absolute'>
-                  <canvas
-                    ref={(canvas) => {
-                      if (canvas) {
-                        drawPercentage(canvas, x.percentage);
-                      }
-                    }}
-                    style={{ backgroundColor: 'rgb(3, 37, 65)' }}
-                    width="40"
-                    height="40"
-                    className="absolute left-3 -bottom-10 z-15 transform -translate-y-1/2 cursor-pointer rounded-full bg-white"
-                  />
+                    <canvas
+                      ref={(canvas) => {
+                        if (canvas) {
+                          drawPercentage(canvas, x.vote_average * 10); // Assuming percentage is based on vote_average
+                        }
+                      }}
+                      style={{ backgroundColor: 'rgb(3, 37, 65)' }}
+                      width="40"
+                      height="40"
+                      className="absolute left-3 -bottom-10 z-15 transform -translate-y-1/2 cursor-pointer rounded-full bg-white"
+                    />
                   </div>
                   <div className='absolute right-3 top-3 w-6 h-6 rounded-full cursor-pointer bg-gray-200 flex items-center justify-center hover:bg-blue-500 transition-colors duration-300'>
-                    <i className="fa-solid fa-ellipsis text-xs cursor-pointer text-gray-600 hover:text-white"></i>
+                    <i className='text-white text-sm fas fa-play'></i> {/* Example icon */}
                   </div>
                 </div>
-                <div className="mt-6 ml-4"> {/* Reduced margin-left */}
-                  <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
-                    {x.title}
-                  </h2>
-                  <p className="text-gray-600">{x.date}</p> {/* Added padding-top for spacing */}
-                </div>
+                <p className="text-lg font-medium text-gray-900 mt-4">{x.title || 'Trending Movie'}</p>
+                <p className="text-gray-500">{x.release_date || 'Release Date'}</p>
               </div>
             ))}
           </Carousel>
@@ -162,3 +233,6 @@ const Today = () => {
 };
 
 export default Today;
+
+
+

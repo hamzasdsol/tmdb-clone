@@ -33,7 +33,7 @@ const Navbar = () => {
                 {category.charAt(0).toUpperCase() + category.slice(1)}
               </button>
               {dropdown[category] && (
-                <div className="absolute top-full left-0 mt-2 bg-white text-black border border-gray-300 shadow-lg rounded-lg w-48 z-50">
+                <div className="absolute top-full left-0 bg-white text-black border border-gray-300 shadow-lg rounded-lg w-48 z-50">
 
                   {category === 'movies' && (
                     <>

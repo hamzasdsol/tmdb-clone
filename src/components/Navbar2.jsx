@@ -1,18 +1,40 @@
-import React from 'react';
-import image from '../assets/images/18wozP6NjPSNBSgCga5bN7yUSzl.jpg'; 
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Navbar2 = () => {
+  const [backgroundImage, setBackgroundImage] = useState('');
+
+  useEffect(() => {
+    const fetchRandomImage = async () => {
+      try {
+        const apiKey = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDb API key
+        const response = await axios.get(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
+        const randomIndex = Math.floor(Math.random() * response.data.results.length);
+        const randomImage = response.data.results[randomIndex].backdrop_path;
+        setBackgroundImage(`https://image.tmdb.org/t/p/original${randomImage}`);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchRandomImage();
+  }, []);
+
   const doubleColor = {
     background: 'linear-gradient(78deg, #17ead9, #6078ea)', // Gradient background
   };
 
   return (
-    <div className='relative'>
+    <div className='relative w-full h-[400px] overflow-hidden'>
       <img
-        src={image}
-        alt="Description"
-        className='w-full h-auto'
-        style={{ filter: 'brightness(50%) contrast(80%)' }} 
+        src={backgroundImage}
+        alt="Background"
+        className='absolute inset-0 w-full h-full object-cover'
+        style={{ 
+          filter: 'brightness(50%) contrast(80%)', 
+          objectPosition: 'center center', // Center the image
+          transition: 'opacity 1s'
+        }}
       />
       <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center px-4 md:px-8 w-full md:w-[80vw]'>
         <h1 className='text-2xl md:text-4xl font-bold text-left mb-1'>Welcome.</h1>
@@ -39,3 +61,6 @@ const Navbar2 = () => {
 };
 
 export default Navbar2;
+
+
+

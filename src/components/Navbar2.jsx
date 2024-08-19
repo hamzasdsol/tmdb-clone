@@ -7,7 +7,7 @@ const Navbar2 = () => {
   useEffect(() => {
     const fetchRandomImage = async () => {
       try {
-        const apiKey = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDb API key
+        const apiKey = import.meta.env.VITE_API_KEY; // Use environment variable
         const response = await axios.get(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
         const randomIndex = Math.floor(Math.random() * response.data.results.length);
         const randomImage = response.data.results[randomIndex].backdrop_path;
@@ -25,14 +25,14 @@ const Navbar2 = () => {
   };
 
   return (
-    <div className='relative w-full h-[400px] overflow-hidden'>
+    <div className='relative w-full h-[400px] md:h-[500px] overflow-hidden'>
       <img
         src={backgroundImage}
         alt="Background"
         className='absolute inset-0 w-full h-full object-cover'
         style={{ 
           filter: 'brightness(50%) contrast(80%)', 
-          objectPosition: 'center center', // Center the image
+          objectPosition: 'center center',
           transition: 'opacity 1s'
         }}
       />
@@ -61,6 +61,3 @@ const Navbar2 = () => {
 };
 
 export default Navbar2;
-
-
-

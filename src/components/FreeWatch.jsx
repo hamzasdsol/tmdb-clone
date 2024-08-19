@@ -3,7 +3,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the default styles
 import axios from 'axios'; // Import axios for API calls
 
-const API_KEY = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDB API key
+const API_KEY = import.meta.env.VITE_API_KEY; // Replace with your TMDB API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {

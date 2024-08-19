@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const TMDB_API_KEY = '1332e02a7aa536736b2d35a49363d0ce';
+const TMDB_API_KEY = import.meta.env.VITE_API_KEY;
 const TMDB_API_URL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
 
 const getAvatarBackgroundColor = (index) => {

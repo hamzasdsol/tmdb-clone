@@ -4,33 +4,21 @@ import 'react-multi-carousel/lib/styles.css';
 import './Today.css';
 import axios from 'axios';
 
-const API_KEY = '1332e02a7aa536736b2d35a49363d0ce'; // Replace with your TMDB API key
+const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 7
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 3
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 2
-  }
+  superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
+  desktop: { breakpoint: { max: 3000, min: 1024 }, items: 7 },
+  tablet: { breakpoint: { max: 1024, min: 464 }, items: 3 },
+  mobile: { breakpoint: { max: 464, min: 0 }, items: 2 },
 };
 
 const Popular = () => {
   const carouselRef = useRef(null);
   const [activePopularButton, setActivePopularButton] = useState('Streaming');
   const [popularContent, setPopularContent] = useState([]);
-  const [contentType, setContentType] = useState('movie'); // Default to movies
+  const [contentType, setContentType] = useState('movie');
 
   const handleKeyDown = (event) => {
     if (carouselRef.current) {
@@ -55,25 +43,23 @@ const Popular = () => {
         let endpoint = '';
         switch (activePopularButton) {
           case 'Streaming':
-            endpoint = `/trending/${contentType}/week`; // Trending movies/shows this week
+            endpoint = `/trending/${contentType}/week`;
             break;
           case 'On TV':
-            endpoint = `/movie/upcoming`; // Shows currently airing
+            endpoint = `/movie/upcoming`;
             break;
           case 'For Rent':
-            endpoint = `/tv/on_the_air`; // Movies currently playing in theaters
+            endpoint = `/tv/on_the_air`;
             break;
           case 'In Theaters':
-            endpoint = `/movie/now_playing`; // Movies currently playing in theaters
+            endpoint = `/movie/now_playing`;
             break;
           default:
-            endpoint = `/trending/${contentType}/week`; // Default to trending movies/shows
+            endpoint = `/trending/${contentType}/week`;
         }
 
         const { data } = await axios.get(`${BASE_URL}${endpoint}`, {
-          params: {
-            api_key: API_KEY
-          }
+          params: { api_key: API_KEY }
         });
         setPopularContent(data.results);
       } catch (error) {
@@ -132,60 +118,63 @@ const Popular = () => {
   return (
     <div>
       <section className="text-gray-600 body-font cursor-pointer" style={{ position: 'relative' }}>
-        <div className='pt-8 -mt-2 px-4 flex items-center'>
-          <h2 className='text-3xl font-semibold mr-4 text-black'>What's Popular</h2>
+      <div className='pt-8 -mt-2 px-4 flex flex-col md:flex-row items-center'>
+  <h2 className='text-3xl font-semibold text-black mb-4 md:mb-0 md:mr-4'>
+    What's Popular
+  </h2>
 
-          <div className='border-2 border-black text-black bg-white rounded-full flex items-center'>
-            <button
-              style={activePopularButton === 'Streaming' ? selectedStyle : defaultStyle}
-              className='group px-2 py-1  font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-              onClick={() => {
-                setActivePopularButton('Streaming');
-                setContentType('movie'); // Default to movie
-              }}
-            >
-              <span style={activePopularButton === 'Streaming' ? gradientText : {}}>
-                Streaming
-              </span>
-            </button>
-            <button
-              style={activePopularButton === 'On TV' ? selectedStyle : defaultStyle}
-              className='group px-2 py-1 ml-4  font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-              onClick={() => {
-                setActivePopularButton('On TV');
-                setContentType('tv'); // For TV shows
-              }}
-            >
-              <span style={activePopularButton === 'On TV' ? gradientText : {}}>
-                On TV
-              </span>
-            </button>
-            <button
-              style={activePopularButton === 'For Rent' ? selectedStyle : defaultStyle}
-              className='group px-2  font-bold py-1 ml-4 transition-colors duration-300 ease-in-out rounded-full text-sm'
-              onClick={() => {
-                setActivePopularButton('For Rent');
-                setContentType('movie'); // Default to movie
-              }}
-            >
-              <span style={activePopularButton === 'For Rent' ? gradientText : {}}>
-                For Rent
-              </span>
-            </button>
-            <button
-              style={activePopularButton === 'In Theaters' ? selectedStyle : defaultStyle}
-              className='group px-2 py-1 ml-4  font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-              onClick={() => {
-                setActivePopularButton('In Theaters');
-                setContentType('movie'); // Default to movie
-              }}
-            >
-              <span style={activePopularButton === 'In Theaters' ? gradientText : {}}>
-                In Theaters
-              </span>
-            </button>
-          </div>
-        </div>
+  <div className='border-2 border-black text-black bg-white rounded-full flex flex-wrap items-center'>
+    <button
+      style={activePopularButton === 'Streaming' ? selectedStyle : defaultStyle}
+      className='group px-2 py-1 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+      onClick={() => {
+        setActivePopularButton('Streaming');
+        setContentType('movie');
+      }}
+    >
+      <span style={activePopularButton === 'Streaming' ? gradientText : {}}>
+        Streaming
+      </span>
+    </button>
+    <button
+      style={activePopularButton === 'On TV' ? selectedStyle : defaultStyle}
+      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+      onClick={() => {
+        setActivePopularButton('On TV');
+        setContentType('tv');
+      }}
+    >
+      <span style={activePopularButton === 'On TV' ? gradientText : {}}>
+        On TV
+      </span>
+    </button>
+    <button
+      style={activePopularButton === 'For Rent' ? selectedStyle : defaultStyle}
+      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+      onClick={() => {
+        setActivePopularButton('For Rent');
+        setContentType('movie');
+      }}
+    >
+      <span style={activePopularButton === 'For Rent' ? gradientText : {}}>
+        For Rent
+      </span>
+    </button>
+    <button
+      style={activePopularButton === 'In Theaters' ? selectedStyle : defaultStyle}
+      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+      onClick={() => {
+        setActivePopularButton('In Theaters');
+        setContentType('movie');
+      }}
+    >
+      <span style={activePopularButton === 'In Theaters' ? gradientText : {}}>
+        In Theaters
+      </span>
+    </button>
+  </div>
+</div>
+
 
         <div className="container px-5 py-5 mx-auto cursor-pointer">
           <Carousel

@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const API_KEY = '1332e02a7aa536736b2d35a49363d0ce';
+const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const fetchTrending = async (category) => {

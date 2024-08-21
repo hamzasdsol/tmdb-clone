@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 
+// Fetch trending data for a category
 const fetchTrending = async (category) => {
   try {
     const response = await fetch(`${BASE_URL}/trending/${category}/week?api_key=${API_KEY}`);
@@ -18,6 +19,7 @@ const fetchTrending = async (category) => {
   }
 };
 
+// Fetch videos for a specific item and category
 const fetchVideos = async (category, id) => {
   try {
     const response = await fetch(`${BASE_URL}/${category}/${id}/videos?api_key=${API_KEY}`);
@@ -55,6 +57,10 @@ const TrailorSlider = () => {
     fetchData();
   }, [selected]);
 
+  const handleButtonClick = (category) => {
+    setSelected(category);
+  };
+
   const openModal = (trailer) => {
     setCurrentTrailer(trailer);
     setIsModalOpen(true);
@@ -65,15 +71,16 @@ const TrailorSlider = () => {
     setCurrentTrailer(null);
   };
 
-  const borderColor = 'rgb(9, 184, 184)'; // Border color for the buttons
+  const borderColor = 'rgb(9, 184, 184)'; 
   const selectedStyle = {
     backgroundColor: borderColor,
-    color: 'black', // Text color when selected
+    color: 'black', 
+    border: `1px solid ${borderColor}`,
   };
 
   const defaultStyle = {
     backgroundColor: 'transparent',
-    color: 'white', // Text color when not selected
+    color: 'white', 
   };
 
   const sliderSettings = {
@@ -136,41 +143,16 @@ const TrailorSlider = () => {
             Latest Trailers
           </h2>
           <div className='relative flex space-x-2 rounded-full' style={{ border: `1px solid ${borderColor}` }}>
-            <button
-              onClick={() => setSelected('movie')}
-              style={selected === 'movie' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 rounded-full text-sm  font-bold font-medium'
-            >
-              Popular
-            </button>
-            <button
-              onClick={() => setSelected('Streaming')}
-              style={selected === 'Streaming' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 font-bold rounded-full text-sm font-medium'
-            >
-              Streaming
-            </button>
-            <button
-              onClick={() => setSelected('on TV')}
-              style={selected === 'on TV' ? selectedStyle : defaultStyle}
-              className='px-4 py-2 font-bold rounded-full text-sm font-medium'
-            >
-              On TV
-            </button>
-            <button
-              onClick={() => setSelected('for rent')}
-              style={selected === 'for rent' ? selectedStyle : defaultStyle}
-              className='px-4 py-2  font-bold rounded-full text-sm font-medium'
-            >
-              For Rent
-            </button>
-            <button
-              onClick={() => setSelected('in theaters')}
-              style={selected === 'in theaters' ? selectedStyle : defaultStyle}
-              className='px-4 py-2  font-bold rounded-full text-sm font-medium'
-            >
-              In Theaters
-            </button>
+            {['movie', 'tv', 'streaming', 'rent', 'theaters'].map((category) => (
+              <button
+                key={category}
+                onClick={() => handleButtonClick(category)}
+                style={selected === category ? selectedStyle : defaultStyle}
+                className={`px-4 py-2 rounded-full text-sm font-bold font-medium transition-transform duration-300 hover:scale-105`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -274,3 +256,6 @@ const TrailorSlider = () => {
 };
 
 export default TrailorSlider;
+
+
+

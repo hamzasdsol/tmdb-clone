@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css'; // Import the default styles
+import 'react-multi-carousel/lib/styles.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
-; // Replace with your TMDB API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {
@@ -31,6 +31,7 @@ const Today = () => {
   const [bars, setBars] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [activeTrendingButton, setActiveTrendingButton] = useState('Today');
+  const navigate = useNavigate();
 
   // Fetch trending movies from TMDB
   const fetchTrendingMovies = async (period) => {
@@ -49,16 +50,16 @@ const Today = () => {
   // Generate random vertical bars
   useEffect(() => {
     const generateBars = () => {
-      const barWidth = 2; // Thinner width of each bar
-      const barMargin = 6; // Increase margin between bars
-      const numberOfBars = Math.ceil(window.innerWidth / (barWidth + barMargin)); // Number of bars based on width and margin
+      const barWidth = 2;
+      const barMargin = 6;
+      const numberOfBars = Math.ceil(window.innerWidth / (barWidth + barMargin));
       const barArray = [];
       for (let i = 0; i < numberOfBars; i++) {
-        const height = Math.random() * (window.innerHeight / 2); // Random height from 0 to half the window height
+        const height = Math.random() * (window.innerHeight / 2);
         barArray.push({
-          left: `${i * (barWidth + barMargin)}px`, // Position each bar with margin
+          left: `${i * (barWidth + barMargin)}px`,
           height: `${height}px`,
-          width: `${barWidth}px`, // Set the width of the bars
+          width: `${barWidth}px`,
         });
       }
       setBars(barArray);
@@ -82,7 +83,6 @@ const Today = () => {
     }
   };
 
-  // Add and remove event listeners
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -90,18 +90,15 @@ const Today = () => {
     };
   }, []);
 
-  // Fetch trending movies based on the active button
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchTrendingMovies(activeTrendingButton);
-      console.log(data); // Log data to verify structure
       setTrendingMovies(data);
     };
 
     fetchData();
   }, [activeTrendingButton]);
 
-  // Function to draw the percentage on the canvas
   const drawPercentage = (canvas, percentage) => {
     const ctx = canvas.getContext('2d');
     const radius = canvas.width / 2;
@@ -111,22 +108,20 @@ const Today = () => {
     const startAngle = -0.5 * Math.PI;
     const endAngle = ((percentage / 100) * 2 * Math.PI) - 0.5 * Math.PI;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = '#00FF00'; // Green color for the stroke
+    ctx.strokeStyle = '#00FF00';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius - lineWidth / 2, startAngle, endAngle, false);
     ctx.stroke();
 
-    // Draw the percentage text
     ctx.font = 'bold 12px Arial';
-    ctx.fillStyle = 'white'; // Green color for the text
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(`${percentage}%`, centerX, centerY);
   };
 
-  // Styles for the buttons
   const selectedStyle = {
     backgroundColor: 'rgb(3, 37, 65)',
     color: 'transparent',
@@ -147,6 +142,10 @@ const Today = () => {
   const defaultStyle = {
     backgroundColor: 'white',
     color: 'black',
+  };
+
+  const handleImageClick = (id) => {
+    navigate(`/details/${id}`); // Navigate to detail page
   };
 
   return (
@@ -181,7 +180,7 @@ const Today = () => {
             <div key={index} style={{
               left: bar.left,
               height: bar.height,
-              width: bar.width, // Apply width to the bar
+              width: bar.width,
             }} />
           ))}
         </div>
@@ -190,26 +189,26 @@ const Today = () => {
             ref={carouselRef}
             responsive={responsive}
             infinite={true}
-            showDots={false} // Hide dots
-            arrows={false} // Hide arrows
-            autoPlay={false} // Disable auto play if not needed
-            itemClass="carousel-item" // Apply margin between items
-            containerClass="carousel-container" // Apply padding around container
+            showDots={false}
+            arrows={false}
+            autoPlay={false}
+            itemClass="carousel-item"
+            containerClass="carousel-container"
           >
             {trendingMovies.map((x, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative" onClick={() => handleImageClick(x.id)}>
                 <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   <img
                     alt={x.title || 'Trending Movie'}
                     className="object-cover object-center w-full h-full block cursor-pointer relative"
-                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`} // Update URL based on TMDB structure
-                    loading="lazy" // Lazy loading for performance
+                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`}
+                    loading="lazy"
                   />
                   <div className='absolute'>
                     <canvas
                       ref={(canvas) => {
                         if (canvas) {
-                          drawPercentage(canvas, x.vote_average * 10); // Assuming percentage is based on vote_average
+                          drawPercentage(canvas, x.vote_average * 10);
                         }
                       }}
                       style={{ backgroundColor: 'rgb(3, 37, 65)' }}
@@ -219,7 +218,7 @@ const Today = () => {
                     />
                   </div>
                   <div className='absolute right-3 top-3 w-6 h-6 rounded-full cursor-pointer bg-gray-200 flex items-center justify-center hover:bg-blue-500 transition-colors duration-300'>
-                    <i className='text-white text-sm fas fa-play'></i> {/* Example icon */}
+                    <i className='text-white text-sm fas fa-play'></i>
                   </div>
                 </div>
                 <p className="text-lg font-medium text-gray-900 mt-4">{x.title || 'Trending Movie'}</p>
@@ -234,6 +233,3 @@ const Today = () => {
 };
 
 export default Today;
-
-
-

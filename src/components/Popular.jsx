@@ -3,6 +3,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import './Today.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -19,6 +20,7 @@ const Popular = () => {
   const [activePopularButton, setActivePopularButton] = useState('Streaming');
   const [popularContent, setPopularContent] = useState([]);
   const [contentType, setContentType] = useState('movie');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleKeyDown = (event) => {
     if (carouselRef.current) {
@@ -115,66 +117,69 @@ const Popular = () => {
     color: 'black',
   };
 
+  const handleImageClick = (id) => {
+    navigate(`/details/${id}`); // Navigate to detail page
+  };
+
   return (
     <div>
       <section className="text-gray-600 body-font cursor-pointer" style={{ position: 'relative' }}>
-      <div className='pt-8 -mt-2 px-4 flex flex-col md:flex-row items-center'>
-  <h2 className='text-3xl font-semibold text-black mb-4 md:mb-0 md:mr-4'>
-    What's Popular
-  </h2>
+        <div className='pt-8 -mt-2 px-4 flex flex-col md:flex-row items-center'>
+          <h2 className='text-3xl font-semibold text-black mb-4 md:mb-0 md:mr-4'>
+            What's Popular
+          </h2>
 
-  <div className='border-2 border-black text-black bg-white rounded-full flex flex-wrap items-center'>
-    <button
-      style={activePopularButton === 'Streaming' ? selectedStyle : defaultStyle}
-      className='group px-2 py-1 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-      onClick={() => {
-        setActivePopularButton('Streaming');
-        setContentType('movie');
-      }}
-    >
-      <span style={activePopularButton === 'Streaming' ? gradientText : {}}>
-        Streaming
-      </span>
-    </button>
-    <button
-      style={activePopularButton === 'On TV' ? selectedStyle : defaultStyle}
-      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-      onClick={() => {
-        setActivePopularButton('On TV');
-        setContentType('tv');
-      }}
-    >
-      <span style={activePopularButton === 'On TV' ? gradientText : {}}>
-        On TV
-      </span>
-    </button>
-    <button
-      style={activePopularButton === 'For Rent' ? selectedStyle : defaultStyle}
-      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-      onClick={() => {
-        setActivePopularButton('For Rent');
-        setContentType('movie');
-      }}
-    >
-      <span style={activePopularButton === 'For Rent' ? gradientText : {}}>
-        For Rent
-      </span>
-    </button>
-    <button
-      style={activePopularButton === 'In Theaters' ? selectedStyle : defaultStyle}
-      className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
-      onClick={() => {
-        setActivePopularButton('In Theaters');
-        setContentType('movie');
-      }}
-    >
-      <span style={activePopularButton === 'In Theaters' ? gradientText : {}}>
-        In Theaters
-      </span>
-    </button>
-  </div>
-</div>
-
+          <div className='border-2 border-black text-black bg-white rounded-full flex flex-wrap items-center'>
+            <button
+              style={activePopularButton === 'Streaming' ? selectedStyle : defaultStyle}
+              className='group px-2 py-1 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+              onClick={() => {
+                setActivePopularButton('Streaming');
+                setContentType('movie');
+              }}
+            >
+              <span style={activePopularButton === 'Streaming' ? gradientText : {}}>
+                Streaming
+              </span>
+            </button>
+            <button
+              style={activePopularButton === 'On TV' ? selectedStyle : defaultStyle}
+              className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+              onClick={() => {
+                setActivePopularButton('On TV');
+                setContentType('tv');
+              }}
+            >
+              <span style={activePopularButton === 'On TV' ? gradientText : {}}>
+                On TV
+              </span>
+            </button>
+            <button
+              style={activePopularButton === 'For Rent' ? selectedStyle : defaultStyle}
+              className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+              onClick={() => {
+                setActivePopularButton('For Rent');
+                setContentType('movie');
+              }}
+            >
+              <span style={activePopularButton === 'For Rent' ? gradientText : {}}>
+                For Rent
+              </span>
+            </button>
+            <button
+              style={activePopularButton === 'In Theaters' ? selectedStyle : defaultStyle}
+              className='group px-2 py-1 ml-2 font-bold transition-colors duration-300 ease-in-out rounded-full text-sm'
+              onClick={() => {
+                setActivePopularButton('In Theaters');
+                setContentType('movie');
+              }}
+            >
+              <span style={activePopularButton === 'In Theaters' ? gradientText : {}}>
+                In Theaters
+              </span>
+            </button>
+          </div>
+        </div>
 
         <div className="container px-5 py-5 mx-auto cursor-pointer">
           <Carousel
@@ -188,7 +193,7 @@ const Popular = () => {
             containerClass="carousel-container"
           >
             {popularContent.map((x, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative" onClick={() => handleImageClick(x.id)}>
                 <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   <img
                     alt="popular"

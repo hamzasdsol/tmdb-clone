@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css'; // Import the default styles
-import axios from 'axios'; // Import axios for API calls
+import 'react-multi-carousel/lib/styles.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const API_KEY = import.meta.env.VITE_API_KEY; // Replace with your TMDB API key
+const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const responsive = {
@@ -28,7 +29,8 @@ const responsive = {
 const FreeWatch = () => {
   const [activeFreeToWatchButton, setActiveFreeToWatchButton] = useState('Movies');
   const [content, setContent] = useState([]);
-  const carouselRef = useRef(null); // Define the carouselRef here
+  const carouselRef = useRef(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleKeyDown = (event) => {
     if (carouselRef.current) {
@@ -52,15 +54,14 @@ const FreeWatch = () => {
       try {
         let endpoint = '';
         if (activeFreeToWatchButton === 'Movies') {
-          endpoint = `/discover/movie`; // Use discover movie endpoint
+          endpoint = `/discover/movie`;
         } else if (activeFreeToWatchButton === 'TV') {
-          endpoint = `/discover/tv`; // Use discover TV endpoint
+          endpoint = `/discover/tv`;
         }
 
         const { data } = await axios.get(`${BASE_URL}${endpoint}`, {
           params: {
             api_key: API_KEY,
-            // Add additional parameters if needed
           }
         });
         setContent(data.results);
@@ -81,16 +82,15 @@ const FreeWatch = () => {
     const startAngle = -0.5 * Math.PI;
     const endAngle = ((percentage / 100) * 2 * Math.PI) - 0.5 * Math.PI;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = '#00FF00'; // Green color for the stroke
+    ctx.strokeStyle = '#00FF00';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius - lineWidth / 2, startAngle, endAngle, false);
     ctx.stroke();
 
-    // Draw the percentage text
     ctx.font = 'bold 12px Arial';
-    ctx.fillStyle = 'white'; // Green color for the text
+    ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(`${percentage}%`, centerX, centerY);
@@ -116,6 +116,10 @@ const FreeWatch = () => {
   const defaultStyle = {
     backgroundColor: 'white',
     color: 'black',
+  };
+
+  const handleImageClick = (id) => {
+    navigate(`/details/${id}`); // Navigate to detail page
   };
 
   return (
@@ -151,26 +155,26 @@ const FreeWatch = () => {
             ref={carouselRef}
             responsive={responsive}
             infinite={true}
-            showDots={false} // Hide dots
-            arrows={false} // Hide arrows
-            autoPlay={false} // Disable auto play if not needed
-            itemClass="carousel-item" // Apply margin between items
-            containerClass="carousel-container" // Apply padding around container
+            showDots={false}
+            arrows={false}
+            autoPlay={false}
+            itemClass="carousel-item"
+            containerClass="carousel-container"
           >
             {content.map((x, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative" onClick={() => handleImageClick(x.id)}>
                 <div className="block h-75 w-50 rounded-lg overflow-hidden cursor-pointer">
                   <img
                     alt="trending"
                     className="object-cover object-center w-full h-full block cursor-pointer relative"
-                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`} // Adjust the path as necessary
-                    loading="lazy" // Lazy loading for performance
+                    src={`https://image.tmdb.org/t/p/w500${x.poster_path}`}
+                    loading="lazy"
                   />
                   <div className='absolute'>
                     <canvas
                       ref={(canvas) => {
                         if (canvas) {
-                          drawPercentage(canvas, x.vote_average * 10); // Assuming vote_average as percentage
+                          drawPercentage(canvas, x.vote_average * 10);
                         }
                       }}
                       style={{ backgroundColor: 'rgb(3, 37, 65)' }}
@@ -185,9 +189,9 @@ const FreeWatch = () => {
                 </div>
                 <div className="mt-6 ml-4">
                   <h2 className="text-gray-900 title-font text-lg font-medium cursor-pointer text-left">
-                    {x.title || x.name} {/* Handle both movies and TV shows */}
+                    {x.title || x.name}
                   </h2>
-                  <p className="text-gray-600">{x.release_date || x.first_air_date}</p> {/* Handle both movies and TV shows */}
+                  <p className="text-gray-600">{x.release_date || x.first_air_date}</p>
                 </div>
               </div>
             ))}

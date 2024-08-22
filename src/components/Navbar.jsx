@@ -49,30 +49,30 @@ const Navbar = () => {
                   <div className="absolute top-full left-0 bg-white text-black border border-gray-300 shadow-lg rounded-lg w-48 z-50">
                     {category === 'movies' && (
                       <>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/movies/action">Popular</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/movies/drama">Now Playing</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/movies/comedy">Upcoming</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/movies/horror">Top Rated</a>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'movie', type: 'popular' }}>Popular</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'movie', type: 'now_playing' }}>Now Playing</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'movie', type: 'upcoming' }}>Upcoming</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'movie', type: 'top_rated' }}>Top Rated</Link>
                       </>
                     )}
                     {category === 'tvShows' && (
                       <>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/tv-shows/drama">Popular</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/tv-shows/comedy">On TV</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/tv-shows/thriller">Airing Today</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/tv-shows/sci-fi">Top Rated</a>
+                        <Link to="/featurepage" className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" state={{ category: 'tv', type: '' }}>Popular</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'tv', type: 'on_the_air' }}>On TV</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'tv', type: 'airing_today' }}>Airing Today</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/featurepage" state={{ category: 'tv', type: 'top_rated' }}>Top Rated</Link>
                       </>
                     )}
                     {category === 'people' && (
                       <>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/people">Popular People</a>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/people">Popular People</Link>
                       </>
                     )}
                     {category === 'more' && (
                       <>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/settings">Discussions</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/help">Leaderboard</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/about">Support</a>
+                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/settings">Discussions</a>
+                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/help">Leaderboard</a>
+                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/about">Support</a>
                         <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/contact">Api</a>
                       </>
                     )}
@@ -103,8 +103,8 @@ const Navbar = () => {
               ×
             </div>
             <div className="flex flex-col mt-4">
-              <a to="/" className="py-2 px-4 mt-4 text-2xl font-bold">Movies</a>
-              <a to="/" className="py-2 px-4 text-2xl mt-3 font-bold">TV Shows</a>
+              <Link to="/" className="py-2 px-4 mt-4 text-2xl font-bold">Movies</Link>
+              <Link to="/tv-shows/popular" className="py-2 px-4 text-2xl mt-3 font-bold">TV Shows</Link>
               <Link to="/people" className="py-2 px-4 text-2xl font-bold mt-3">People</Link>
               <a to="/" className="py-2 px-4 text-lg font-semibold mt-5">Contribution Bible</a>
               <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">Discussions</a>
@@ -112,8 +112,7 @@ const Navbar = () => {
               <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">API</a>
               <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">Support</a>
               <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">About</a>
-              <a to="/login" className="py-2 px-4 text-lg font-semibold mt-1">Login</a>
-              
+              <Link to="/login" className="py-2 px-4 text-lg font-semibold mt-1">Login</Link>
             </div>
           </div>
 
@@ -142,3 +141,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Login = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleResetPasswordClick = () => {
+    navigate('/reset-password'); // Navigate to Resetpassword page
+  };
+
   return (
     <div className="mt-3 mb-5 flex flex-col lg:flex-row lg:items-start lg:mx-[110px] px-4 lg:px-0">
       <div className="bg-white p-8 rounded w-full flex flex-col">
@@ -41,6 +48,7 @@ const Login = () => {
             </button>
             <button
               type="button"
+              onClick={handleResetPasswordClick} // Set click handler
               className="text-[rgba(1,180,228)] text-gray-700 text-lg py-2 px-4 rounded font-semibold"
             >
               Reset Password
@@ -53,3 +61,4 @@ const Login = () => {
 };
 
 export default Login;
+

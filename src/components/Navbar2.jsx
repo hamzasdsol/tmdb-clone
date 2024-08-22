@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar2 = () => {
   const [backgroundImage, setBackgroundImage] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRandomImage = async () => {
       try {
-        const apiKey = import.meta.env.VITE_API_KEY; // Use environment variable
+        const apiKey = import.meta.env.VITE_API_KEY;
         const response = await axios.get(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
         const randomIndex = Math.floor(Math.random() * response.data.results.length);
         const randomImage = response.data.results[randomIndex].backdrop_path;
@@ -20,8 +23,8 @@ const Navbar2 = () => {
     fetchRandomImage();
   }, []);
 
-  const doubleColor = {
-    background: 'linear-gradient(78deg, #17ead9, #6078ea)', // Gradient background
+  const handleSearchClick = () => {
+    navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
   };
 
   return (
@@ -47,10 +50,13 @@ const Navbar2 = () => {
             type='text'
             placeholder='Search for a Movie, TV Show, Person...'
             className='p-3 w-full md:p-4 bg-white text-gray-900 rounded-full text-base pr-24'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
+            onClick={handleSearchClick}
             className='absolute right-0 top-0 bottom-0 px-4 md:px-6 text-white rounded-full transition-colors duration-300 ease-in-out hover:text-black'
-            style={{ ...doubleColor, height: '100%', lineHeight: '2.5rem' }}
+            style={{ background: 'linear-gradient(78deg, #17ead9, #6078ea)', height: '100%', lineHeight: '2.5rem' }}
           >
             Search
           </button>
@@ -61,3 +67,5 @@ const Navbar2 = () => {
 };
 
 export default Navbar2;
+
+

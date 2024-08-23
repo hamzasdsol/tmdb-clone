@@ -70,10 +70,10 @@ const Navbar = () => {
                     )}
                     {category === 'more' && (
                       <>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/settings">Discussions</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/help">Leaderboard</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/about">Support</a>
-                        <a className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" href="/contact">Api</a>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/settings">Discussions</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/help">Leaderboard</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/about">Support</Link>
+                        <Link className="block px-5 py-2 hover:bg-gray-200 transition-colors text-left duration-300" to="/contact">API</Link>
                       </>
                     )}
                   </div>
@@ -103,16 +103,49 @@ const Navbar = () => {
               ×
             </div>
             <div className="flex flex-col mt-4">
-              <Link to="/" className="py-2 px-4 mt-4 text-2xl font-bold">Movies</Link>
-              <Link to="/tv-shows/popular" className="py-2 px-4 text-2xl mt-3 font-bold">TV Shows</Link>
-              <Link to="/people" className="py-2 px-4 text-2xl font-bold mt-3">People</Link>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-5">Contribution Bible</a>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">Discussions</a>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">Leaderboard</a>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">API</a>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">Support</a>
-              <a to="/" className="py-2 px-4 text-lg font-semibold mt-1">About</a>
-              <Link to="/login" className="py-2 px-4 text-lg font-semibold mt-1">Login</Link>
+              {['movies', 'tvShows', 'people', 'more'].map((category) => (
+                <div
+                  key={category}
+                  className="relative"
+                >
+                  <button className="text-lg font-semibold text-white py-2" onClick={() => setDropdown(prevState => ({ ...prevState, [category]: !dropdown[category] }))}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                  {dropdown[category] && (
+                    <div className=" text-white shadow-lg rounded-lg mt-2">
+                      {category === 'movies' && (
+                        <>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'movie', type: 'popular' }}>Popular</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'movie', type: 'now_playing' }}>Now Playing</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'movie', type: 'upcoming' }}>Upcoming</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'movie', type: 'top_rated' }}>Top Rated</Link>
+                        </>
+                      )}
+                      {category === 'tvShows' && (
+                        <>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'tv', type: '' }}>Popular</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'tv', type: 'on_the_air' }}>On TV</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'tv', type: 'airing_today' }}>Airing Today</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/featurepage" state={{ category: 'tv', type: 'top_rated' }}>Top Rated</Link>
+                        </>
+                      )}
+                      {category === 'people' && (
+                        <>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/people">Popular People</Link>
+                        </>
+                      )}
+                      {category === 'more' && (
+                        <>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/settings">Discussions</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/help">Leaderboard</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/about">Support</Link>
+                          <Link className="block px-4 py-2 hover:bg-gray-600 transition-colors duration-300" to="/contact">API</Link>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -141,4 +174,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

@@ -119,7 +119,7 @@ const Today = () => {
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`${percentage}%`, centerX, centerY);
+    ctx.fillText(`${percentage.toFixed(2)}%`, centerX, centerY);
   };
 
   const selectedStyle = {

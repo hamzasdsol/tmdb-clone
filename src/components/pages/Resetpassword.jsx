@@ -3,14 +3,14 @@ import { TiTick } from 'react-icons/ti';
 
 const Resetpassword = () => {
   return (
-    <div className="mt-5 mb-5 flex flex-col lg:flex-row lg:items-start">
+    <div className="mt-5 mb-5 flex flex-col lg:flex-row">
     
-      <div className="w-full lg:w-1/6  mb-4 lg:mb-0 lg:ms-40">
+      <div className="w-full lg:w-1/6  mb-4 lg:mb-0 ">
        
       </div>
 
     
-      <div className="w-full min-h-[500px] lg:w-2/3 bg-white p-8 rounded flex flex-col justify-start">
+      <div className="w-full min-h-[500px] lg:w-2/3 bg-white p-8 rounded flex flex-col">
         <h2 className="text-3xl font-bold mb-3 text-left">Reset Password</h2>
         <p className="mb-7 text-lg">
         Enter the email you used to sign up for a TMDB account and we'll send you the steps required to reset your password.
@@ -24,7 +24,7 @@ const Resetpassword = () => {
             <input
               id="email"
               type="email"
-              className="w-[60rem] px-3 py-2 border border-gray-300 bg-[#D1E9F6] rounded placeholder-black focus:border-[rgba(1,180,228)] focus:outline-none"
+              className="w-full px-3 py-2 border border-gray-300 bg-[#D1E9F6] rounded placeholder-black focus:border-[rgba(1,180,228)] focus:outline-none"
               placeholder="Enter your email"
             />
           </div>

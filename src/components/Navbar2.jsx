@@ -27,6 +27,12 @@ const Navbar2 = () => {
     navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchClick();
+    }
+  };
+
   return (
     <div className='relative w-full h-[400px] md:h-[500px] overflow-hidden'>
       <img
@@ -52,6 +58,7 @@ const Navbar2 = () => {
             className='p-3 w-full md:p-4 bg-white text-gray-900 rounded-full text-base pr-24'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button
             onClick={handleSearchClick}
@@ -67,5 +74,3 @@ const Navbar2 = () => {
 };
 
 export default Navbar2;
-
-
